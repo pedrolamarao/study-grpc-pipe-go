@@ -1,0 +1,15 @@
+edition = "2024";
+
+package br.dev.purpura.study.grpc.pipe;
+
+option go_package = "purpura.dev.br/study/grpc/pipe/protocol";
+
+message Request { }
+
+message Response {
+  string value = 1;
+}
+
+service Protocol {
+  rpc Operation (Request) returns (Response) { }
+}
