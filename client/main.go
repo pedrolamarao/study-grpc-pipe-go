@@ -13,12 +13,19 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 
-	"purpura.dev.br/study/grpc/pipe/protocol"
+	"pedrolamarao.dev.br/study/protocol"
 )
 
 const (
-	path = `\\.\pipe\purpura.dev.br\study\grpc\pipe`
+	path = `\\.\pipe\pedrolamarao.dev.br\study`
 )
+
+func closeOrPanic(closeable *grpc.ClientConn) {
+	err := closeable.Close()
+	if err != nil {
+		panic(err)
+	}
+}
 
 func main() {
 	connection, err := grpc.NewClient(
@@ -31,7 +38,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer connection.Close()
+	defer closeOrPanic(connection)
 
 	requestor := protocol.NewProtocolClient(connection)
 

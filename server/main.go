@@ -4,13 +4,14 @@ import (
 	"context"
 	"log"
 	"log/slog"
+	"net"
 
 	winio "github.com/Microsoft/go-winio"
 
 	"google.golang.org/grpc"
 	"google.golang.org/protobuf/proto"
 
-	"purpura.dev.br/study/grpc/pipe/protocol"
+	"pedrolamarao.dev.br/study/protocol"
 )
 
 type service struct {
@@ -30,15 +31,22 @@ func (s *service) Operation(_ context.Context, _ *protocol.Request) (*protocol.R
 }
 
 const (
-	path = `\\.\pipe\purpura.dev.br\study\grpc\pipe`
+	path = `\\.\pipe\pedrolamarao.dev.br\study`
 )
+
+func closeOrPanic(closeable net.Listener) {
+	err := closeable.Close()
+	if err != nil {
+		panic(err)
+	}
+}
 
 func main() {
 	pipe, err := winio.ListenPipe(path, &winio.PipeConfig{})
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer pipe.Close()
+	defer closeOrPanic(pipe)
 
 	service := newService()
 
@@ -46,6 +54,6 @@ func main() {
 	protocol.RegisterProtocolServer(server, service)
 	err = server.Serve(pipe)
 	if err != nil {
-		slog.Error("", err)
+		log.Fatal(err)
 	}
 }

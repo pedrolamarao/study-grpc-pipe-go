@@ -1,6 +1,6 @@
-module purpura.dev.br/study/grpc/pipe
+module pedrolamarao.dev.br/study
 
-go 1.26
+go 1.26.0
 
 require (
 	github.com/Microsoft/go-winio v0.6.2
